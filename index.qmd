@@ -1,4 +1,4 @@
----
+x---
 title: "Simulation Challenge"
 subtitle: "Starter Template with To-Dos"
 format:
@@ -91,10 +91,30 @@ TODO: Explain whether the expected value of your account balance after one flip 
 #| label: q1-expected-value-py
 #| echo: true
 
-# TODO: Compute EV after one flip in Python
-# - Show calculation and brief explanation
+# Compute EV after one flip in Python
+# After one flip:
+# - Heads (50% chance): W1 = 30,000 * 1.5 = $45,000
+# - Tails (50% chance): W1 = 30,000 * 0.6 = $18,000
+# EV = 0.5 * 45,000 + 0.5 * 18,000
 
+initial_balance = 30000
+heads_multiplier = 1.5
+tails_multiplier = 0.6
+prob_heads = 0.5
+
+wealth_heads = initial_balance * heads_multiplier
+wealth_tails = initial_balance * tails_multiplier
+expected_value = (prob_heads * wealth_heads) + (prob_heads * wealth_tails)
+
+print(f"Initial wealth: ${initial_balance:,}")
+print(f"After heads (50%): ${wealth_heads:,}")
+print(f"After tails (50%): ${wealth_tails:,}")
+print(f"\nExpected value after one flip: ${expected_value:,.2f}")
+print(f"Gain in EV: ${expected_value - initial_balance:,.2f}")
+print(f"Percentage gain: {((expected_value - initial_balance) / initial_balance) * 100:.2f}%")
 ```
+
+**Interpretation:** The expected value after one flip is **$31,500**, which is **5% higher** than the initial buy-in of $30,000. This simple expected value calculation suggests the game has a positive expected return, which is favorable for the investor.
 
 ### 2) Single Simulation Over Time (Narrative + Plot)
 
@@ -105,11 +125,53 @@ Briefly narrate and visualize what happens to your account balance over the cour
 #| echo: true
 #| fig-cap: "Single simulation path of account balance"
 
-# TODO: Simulate one path from $30,000 over N periods
-# - Make a matplotlib (OO) time-series
-# - Set seed for reproducibility
+# Simulate one path from $30,000 over N periods
+import numpy as np
+import matplotlib.pyplot as plt
 
+# Set seed for reproducibility
+np.random.seed(42)
+
+# Assuming starting at age 46, playing until age 75 (75-46) = 29 flips
+n_flips = 29
+initial_balance = 30000
+
+# Initialize array to store wealth over time
+wealth_path = np.zeros(n_flips + 1)
+wealth_path[0] = initial_balance
+
+# Simulate the coin flips and compute wealth at each step
+for t in range(1, n_flips + 1):
+    coin_flip = np.random.random()  # Generate random number in [0, 1)
+    if coin_flip < 0.5:
+        # Heads: increase by 50%
+        wealth_path[t] = wealth_path[t-1] * 1.5
+    else:
+        # Tails: decrease by 40%
+        wealth_path[t] = wealth_path[t-1] * 0.6
+
+# Create time series plot using object-oriented matplotlib
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.plot(range(n_flips + 1), wealth_path, linewidth=2, color='steelblue')
+ax.axhline(y=initial_balance, color='red', linestyle='--', linewidth=2, label='Initial Investment ($30,000)')
+ax.set_xlabel('No of flips', fontsize=12)
+ax.set_ylabel('Account Balance ($)', fontsize=12)
+ax.set_title('Single Simulation Path: Account Balance Over Time', fontsize=14, fontweight='bold')
+ax.legend(fontsize=10)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Print summary statistics
+final_balance = wealth_path[-1]
+print(f"Initial balance: ${initial_balance:,}")
+print(f"Final balance after {n_flips} flips: ${final_balance:,.2f}")
+print(f"Total return: ${final_balance - initial_balance:,.2f} ({((final_balance/initial_balance) - 1)*100:.2f}%)")
+print(f"Peak balance: ${np.max(wealth_path):,.2f}")
+print(f"Minimum balance: ${np.min(wealth_path):,.2f}")
 ```
+
+**Narrative:** This simulation (with seed=42 for reproducibility) reveals a path of significant volatility in the account balance. The strategy generates dramatic swings with each coin flip, where the account can experience both rapid gains and substantial drawdowns. This illustrates the inherent risk and substantial uncertainty of the investment, as the account value is highly sensitive to the outcome of each individual event. While the theoretical expected value of the strategy is positive over an infinite number of trials, the observed single path demonstrates the stark reality that individual outcomes can vary widely and that a favorable long-term average does not mitigate the risk of significant short-term losses. This highlights the crucial distinction between a strategy's expected value and the actual, high-variance results experienced in a finite number of simulations.
 
 ### 3) 100 Simulations: Distribution of Final Balances
 
