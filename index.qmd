@@ -152,7 +152,10 @@ for t in range(1, n_flips + 1):
 
 # Create time series plot using object-oriented matplotlib
 fig, ax = plt.subplots(figsize=(8, 6))
-ax.plot(range(n_flips + 1), wealth_path, linewidth=2, color='steelblue')
+ax.plot(range(n_flips + 1), wealth_path, linewidth=2, color='steelblue', marker='o', 
+        markersize=6, 
+        markerfacecolor='steelblue',
+        markeredgecolor='black')
 ax.axhline(y=initial_balance, color='red', linestyle='--', linewidth=2, label='Initial Investment ($30,000)')
 ax.set_xlabel('No of flips', fontsize=12)
 ax.set_ylabel('Account Balance ($)', fontsize=12)
