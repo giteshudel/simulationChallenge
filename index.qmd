@@ -89,7 +89,7 @@ TODO: Explain whether the expected value of your account balance after one flip 
 
 ```{python}
 #| label: q1-expected-value-py
-#| echo: true
+#| echo: false
 
 # Compute EV after one flip in Python
 # After one flip:
@@ -122,7 +122,7 @@ Briefly narrate and visualize what happens to your account balance over the cour
 
 ```{python}
 #| label: q2-single-sim-py
-#| echo: true
+#| echo: false
 #| fig-cap: "Single simulation path of account balance"
 
 # Simulate one path from $30,000 over N periods
@@ -182,12 +182,103 @@ TODO: Visually and narratively describe the distribution of your account balance
 
 ```{python}
 #| label: q3-dist-100-py
-#| echo: true
+#| echo: false
 #| fig-cap: "Distribution of final balances across 100 simulations"
 
-# TODO: Run 100 simulations and plot histogram of final balances
-# - Add vertical line at $30,000
-# - Compute mean, median, and P(final > $30,000)
+# Run 100 simulations and plot histogram of final balances
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MultipleLocator
+
+# Set seed for reproducibility
+np.random.seed(42)
+
+# Parameters
+n_simulations = 100
+n_flips = 29
+initial_balance = 30000
+
+# Function to run a single simulation
+def run_simulation(initial_balance, n_flips):
+    """Run a single simulation and return the final balance."""
+    balance = initial_balance
+    for t in range(n_flips):
+        coin_flip = np.random.random()
+        if coin_flip < 0.5:
+            # Heads: increase by 50%
+            balance = balance * 1.5
+        else:
+            # Tails: decrease by 40%
+            balance = balance * 0.6
+    return balance
+
+# Run 100 simulations
+final_balances = np.zeros(n_simulations)
+for i in range(n_simulations):
+    final_balances[i] = run_simulation(initial_balance, n_flips)
+
+# Compute statistics
+mean_final = np.mean(final_balances)
+median_final = np.median(final_balances)
+prob_above_initial = np.mean(final_balances > initial_balance)
+
+# Create histogram with log scale bins
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Create log-spaced bins
+min_balance = np.min(final_balances)
+max_balance = np.max(final_balances)
+log_bins = np.logspace(np.log10(min_balance), np.log10(max_balance), 30)
+
+# Split data into below and above initial balance
+balances_below = final_balances[final_balances < initial_balance]
+balances_above = final_balances[final_balances >= initial_balance]
+
+# Plot histograms with different colors
+ax.hist(balances_below, bins=log_bins, edgecolor='black', alpha=0.7, color='red', 
+        label=f'Below ${initial_balance:,}')
+ax.hist(balances_above, bins=log_bins, edgecolor='black', alpha=0.7, color='green', 
+        label=f'Above ${initial_balance:,}')
+
+ax.axvline(x=initial_balance, color='red', linestyle='--', linewidth=2, 
+           label=f'Initial Investment (${initial_balance:,})')
+ax.axvline(x=mean_final, color='green', linestyle='-', linewidth=2, 
+           label=f'Mean (${mean_final:,.0f})')
+ax.axvline(x=median_final, color='orange', linestyle=':', linewidth=2, 
+           label=f'Median (${median_final:,.0f})')
+ax.set_xscale('log')
+
+# Format x-axis tick labels as dollar amounts
+def dollar_formatter(x, pos):
+    """Format tick labels as dollar amounts."""
+    return f'${x:,.0f}'
+
+ax.xaxis.set_major_formatter(FuncFormatter(dollar_formatter))
+
+# Format y-axis tick labels as whole numbers
+def int_formatter(x, pos):
+    """Format tick labels as whole numbers."""
+    return f'{int(x)}'
+
+ax.yaxis.set_major_formatter(FuncFormatter(int_formatter))
+ax.yaxis.set_major_locator(MultipleLocator(5))
+
+ax.set_xlabel('Final Balance ($, log scale)', fontsize=12)
+ax.set_ylabel('No of Simulations', fontsize=12)
+ax.set_title('Distribution of Final Balances Across 100 Simulations (Log Scale)', 
+             fontsize=14, fontweight='bold')
+ax.legend(fontsize=10)
+ax.grid(True, alpha=0.3, axis='y')
+plt.tight_layout()
+plt.show()
+
+# Print statistics
+print(f"Number of simulations: {n_simulations}")
+print(f"Mean final balance: ${mean_final:,.2f}")
+print(f"Median final balance: ${median_final:,.2f}")
+print(f"Probability of final balance > ${initial_balance:,}: {prob_above_initial:.3f}")
+print(f"Minimum final balance: ${np.min(final_balances):,.2f}")
+print(f"Maximum final balance: ${np.max(final_balances):,.2f}")
 
 ```
 
@@ -197,10 +288,20 @@ TODO: Report the probability estimate and interpret its practical meaning.
 
 ```{python}
 #| label: q4-prob-original-py
-#| echo: true
+#| echo: false
 
-# TODO: Using the 100 simulations above, estimate P(final > 30000)
-# - Print numeric result with 3 decimals
+# Using the 100 simulations above, estimate P(final > 30000)
+import numpy as np
+
+# The final_balances array from section 3 should be available
+# If not, we'll recalculate (but it should be available from previous chunk)
+initial_balance = 30000
+
+# Estimate probability that final balance > $30,000
+prob_above_30000 = np.mean(final_balances > initial_balance)
+
+# Print numeric result with 3 decimals
+print(f"Probability estimate P(final > ${initial_balance:,}): {prob_above_30000:.3f}")
 
 ```
 
@@ -210,13 +311,130 @@ Instead of having the full balance at risk with each coin flip, assume only 25% 
 
 ```{python}
 #| label: q5-modified-50pct-py
-#| echo: true
-#| fig-cap: "Modified strategy distribution (bet 50% each round)"
+#| echo: false
+#| fig-cap: "Modified strategy distribution (bet 25% each round)"
 
-# TODO: Implement the modified game
-# - Run 100 simulations; plot distribution of final balances
-# - Estimate P(final > 30000) and compare to original
-# - visually compare the outcome distributions of the original and modified strategies
+# Implement the modified game where only 25% of balance is at risk each round
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MultipleLocator
+
+# Set seed for reproducibility
+np.random.seed(42)
+
+# Parameters
+n_simulations = 100
+n_flips = 29
+initial_balance = 30000
+gamble_fraction = 0.25  # Only 25% of balance is gambled each round
+
+# Function to run a single modified simulation
+def run_modified_simulation(initial_balance, n_flips, gamble_fraction):
+    """Run a single modified simulation where only a fraction of balance is at risk."""
+    balance = initial_balance
+    for t in range(n_flips):
+        coin_flip = np.random.random()
+        if coin_flip < 0.5:
+            # Heads: gain 50% on the gambled portion
+            # balance = balance + gamble_fraction * balance * 0.5
+            balance = balance * (1 + gamble_fraction * 0.5)
+        else:
+            # Tails: lose 40% on the gambled portion
+            # balance = balance - gamble_fraction * balance * 0.4
+            balance = balance * (1 - gamble_fraction * 0.4)
+    return balance
+
+# Run 100 simulations for modified strategy
+final_balances_modified = np.zeros(n_simulations)
+for i in range(n_simulations):
+    final_balances_modified[i] = run_modified_simulation(initial_balance, n_flips, gamble_fraction)
+
+# Compute statistics for modified strategy
+mean_modified = np.mean(final_balances_modified)
+median_modified = np.median(final_balances_modified)
+prob_above_initial_modified = np.mean(final_balances_modified > initial_balance)
+
+# Create comparison plot with both distributions
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+
+# Create log-spaced bins for both plots
+min_balance_orig = np.min(final_balances)
+max_balance_orig = np.max(final_balances)
+min_balance_mod = np.min(final_balances_modified)
+max_balance_mod = np.max(final_balances_modified)
+min_balance = min(min_balance_orig, min_balance_mod)
+max_balance = max(max_balance_orig, max_balance_mod)
+log_bins = np.logspace(np.log10(min_balance), np.log10(max_balance), 30)
+
+# Plot 1: Original Strategy
+balances_below_orig = final_balances[final_balances < initial_balance]
+balances_above_orig = final_balances[final_balances >= initial_balance]
+ax1.hist(balances_below_orig, bins=log_bins, edgecolor='black', alpha=0.7, color='red', 
+        label=f'Below ${initial_balance:,}')
+ax1.hist(balances_above_orig, bins=log_bins, edgecolor='black', alpha=0.7, color='green', 
+        label=f'Above ${initial_balance:,}')
+ax1.axvline(x=initial_balance, color='red', linestyle='--', linewidth=2, 
+           label=f'Initial (${initial_balance:,})')
+ax1.axvline(x=mean_final, color='green', linestyle='-', linewidth=2, 
+           label=f'Mean (${mean_final:,.0f})')
+ax1.axvline(x=median_final, color='orange', linestyle=':', linewidth=2, 
+           label=f'Median (${median_final:,.0f})')
+ax1.set_xscale('log')
+ax1.set_xlabel('Final Balance ($, log scale)', fontsize=12)
+ax1.set_ylabel('No of Simulations', fontsize=12)
+ax1.set_title('Original Strategy: Full Balance at Risk', fontsize=14, fontweight='bold')
+ax1.legend(fontsize=9)
+ax1.grid(True, alpha=0.3, axis='y')
+ax1.xaxis.set_major_formatter(FuncFormatter(lambda x, p: f'${x:,.0f}'))
+ax1.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'{int(x)}'))
+ax1.yaxis.set_major_locator(MultipleLocator(5))
+
+# Plot 2: Modified Strategy
+balances_below_mod = final_balances_modified[final_balances_modified < initial_balance]
+balances_above_mod = final_balances_modified[final_balances_modified >= initial_balance]
+ax2.hist(balances_below_mod, bins=log_bins, edgecolor='black', alpha=0.7, color='red', 
+        label=f'Below ${initial_balance:,}')
+ax2.hist(balances_above_mod, bins=log_bins, edgecolor='black', alpha=0.7, color='green', 
+        label=f'Above ${initial_balance:,}')
+ax2.axvline(x=initial_balance, color='red', linestyle='--', linewidth=2, 
+           label=f'Initial (${initial_balance:,})')
+ax2.axvline(x=mean_modified, color='green', linestyle='-', linewidth=2, 
+           label=f'Mean (${mean_modified:,.0f})')
+ax2.axvline(x=median_modified, color='orange', linestyle=':', linewidth=2, 
+           label=f'Median (${median_modified:,.0f})')
+ax2.set_xscale('log')
+ax2.set_xlabel('Final Balance ($, log scale)', fontsize=12)
+ax2.set_ylabel('No of Simulations', fontsize=12)
+ax2.set_title('Modified Strategy: 25% of Balance at Risk', fontsize=14, fontweight='bold')
+ax2.legend(fontsize=9)
+ax2.grid(True, alpha=0.3, axis='y')
+ax2.xaxis.set_major_formatter(FuncFormatter(lambda x, p: f'${x:,.0f}'))
+ax2.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'{int(x)}'))
+ax2.yaxis.set_major_locator(MultipleLocator(5))
+
+plt.tight_layout()
+plt.show()
+
+# Print comparison statistics
+print("=" * 60)
+print("COMPARISON: Original vs Modified Strategy")
+print("=" * 60)
+print(f"\nOriginal Strategy (Full Balance at Risk):")
+print(f"  Mean final balance: ${mean_final:,.2f}")
+print(f"  Median final balance: ${median_final:,.2f}")
+print(f"  P(final > ${initial_balance:,}): {prob_above_initial:.3f}")
+print(f"  Min: ${np.min(final_balances):,.2f}, Max: ${np.max(final_balances):,.2f}")
+
+print(f"\nModified Strategy (25% of Balance at Risk):")
+print(f"  Mean final balance: ${mean_modified:,.2f}")
+print(f"  Median final balance: ${median_modified:,.2f}")
+print(f"  P(final > ${initial_balance:,}): {prob_above_initial_modified:.3f}")
+print(f"  Min: ${np.min(final_balances_modified):,.2f}, Max: ${np.max(final_balances_modified):,.2f}")
+
+print(f"\nDifferences:")
+print(f"  Mean difference: ${mean_modified - mean_final:,.2f}")
+print(f"  Median difference: ${median_modified - median_final:,.2f}")
+print(f"  P(>${initial_balance:,}) difference: {prob_above_initial_modified - prob_above_initial:.3f}")
 
 ```
 
