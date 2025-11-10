@@ -144,7 +144,7 @@ Gain in EV: $1,500.00
 Percentage gain: 5.00%</code></pre>
 </div>
 </div>
-<p><strong>Interpretation:</strong> The expected value after one flip is <strong>$31,500</strong>, which is <strong>5% higher</strong> than the initial buy-in of $30,000. This simple expected value calculation suggests the game has a positive expected return, which is favorable for the investor.</p>
+<p><strong>Interpretation:</strong> The expected value after one flip is <strong>$31,500</strong>, which is <strong>5% higher</strong> than the initial buy-in of $30,000. This simple expected value calculation suggests the game has a positive expected return, which is favorable for the investor. However, this is based ona single flip and does not account for the volatility of the game over time.</p>
 </section>
 <section id="single-simulation-over-time-narrative-plot" class="level3">
 <h3 class="anchored" data-anchor-id="single-simulation-over-time-narrative-plot">2) Single Simulation Over Time (Narrative + Plot)</h3>
@@ -159,11 +159,18 @@ Percentage gain: 5.00%</code></pre>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Initial balance: $30,000
+<pre><code>Starting Age: 46
+Final Age: 75
+Number of flips: 29
+
+Initial balance: $30,000
 Final balance after 29 flips: $25,736.39
 Total return: $-4,263.61 (-14.21%)
 Peak balance: $79,433.31
-Minimum balance: $3,826.38</code></pre>
+Minimum balance: $3,826.38
+
+Heads (wins): 8 out of 29 (27.59%)
+Tails (losses): 21 out of 29 (72.41%)</code></pre>
 </div>
 </div>
 <p><strong>Narrative:</strong> This simulation (with seed=42 for reproducibility) reveals a path of significant volatility in the account balance. The strategy generates dramatic swings with each coin flip, where the account can experience both rapid gains and substantial drawdowns. This illustrates the inherent risk and substantial uncertainty of the investment, as the account value is highly sensitive to the outcome of each individual event. While the theoretical expected value of the strategy is positive over an infinite number of trials, the observed single path demonstrates the stark reality that individual outcomes can vary widely and that a favorable long-term average does not mitigate the risk of significant short-term losses. This highlights the crucial distinction between a strategy’s expected value and the actual, high-variance results experienced in a finite number of simulations.</p>
@@ -181,33 +188,78 @@ Minimum balance: $3,826.38</code></pre>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of simulations: 100
-Mean final balance: $192,131.11
-Median final balance: $10,294.56
-Probability of final balance &gt; $30,000: 0.190
-Minimum final balance: $16.87
-Maximum final balance: $15,708,246.77</code></pre>
+<pre><code>Simulation Parameters:
+  --------------------------------
+  Initial balance: $30,000
+  Number of simulations: 100
+  Time period: 29 (ages 46-75)
+
+Distribution Statistics:
+  --------------------------------
+  Mean final balance: $192,131.11
+  Median final balance: $10,294.56
+  standard deviation: $1,561,309.44
+  Minimum final balance: $16.87
+  Maximum final balance: $15,708,246.77
+
+Probability Statistics:
+  --------------------------------
+  Probability of final balance &lt; $30,000: 81.0%
+  Probability of final balance &gt; $30,000: 19.0%</code></pre>
 </div>
 </div>
+<p><strong>Narrative:</strong> After running 100 simulations of the game over 29 years:</p>
+<p><strong>Distribution Characteristics:</strong></p>
+<ul>
+<li>The distribution is heavily right-skewed.</li>
+<li>Mean balance is $192,131.11 which is significantly higher than the median balance of $10,294.56.</li>
+<li>Standard deviation is $1,561,309.44 which is very high.</li>
+<li>This indicates extreme volatility in the outcomes: some simulations end up with very high balances, while others end up with very low balances or significant losses.</li>
+<li>The wide range (from $16.87 to $15,708,246.77) demonstrates the extreme nature of the outcomes &amp; high variance.</li>
+</ul>
+<p><strong>Probability of Happy Outcomes:</strong></p>
+<ul>
+<li>On investing $30,000, probability of ending with more than $30,000 is 19%.</li>
+<li>This means in 19 out of 100 simulations would be considered a “happy outcome”.</li>
+</ul>
+<p><strong>Risk Assessment:</strong></p>
+<ul>
+<li>Less than 20% of the simulations ended with a balance greater than $30,000. This is a significant risk, as it means that the investor has a 20% chance of losing money over the 29-year period.</li>
+<li>The high standard deviation of $1,561,309.44 indicates that the outcomes are highly unpredictaable.</li>
+<li>You could loose up to $15,708,246.77 if the outcomes are very unfavorable or gain up to $192,131.11 if the outcomes are very favorable.</li>
+</ul>
+<p><strong>Conclusion:</strong></p>
+<p>For an investor considering whether to buy into this game with $30,000, the simulation results suggest that:</p>
+<ul>
+<li>The probability of losing money is significant</li>
+<li>The range of possible outcomes is extreme</li>
+<li>The typical (median) outcome may be disappointing despite positive expected value</li>
+<li>The risk of catastrophic loss cannot be ignored</li>
+</ul>
+<p>This analysis demonstrates why risk assessment must go beyond simple expected value calculations. The distribution characteristics, probability of favorable outcomes, and comprehensive risk assessment all point to the same conclusion: <strong>this investment, while mathematically favorable in expectation, carries substantial risk that may be unacceptable for most investors, particularly those who cannot afford to lose their initial capital.</strong></p>
 </section>
 <section id="probability-balance-30000-at-age-75-original-game" class="level3">
 <h3 class="anchored" data-anchor-id="probability-balance-30000-at-age-75-original-game">4) Probability Balance &gt; $30,000 at Age 75 (Original Game)</h3>
 <p>TODO: Report the probability estimate and interpret its practical meaning.</p>
 <div id="q4-prob-original-py" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
-<pre><code>Probability estimate P(final &gt; $30,000): 0.190</code></pre>
+<pre><code>Probability estimate P(final &gt; $30,000): 19.0%</code></pre>
 </div>
 </div>
+<p><strong>Interpretation:</strong></p>
+<p>The probability estimate P(final &gt; $30,000) = 19.0% reveals a critical insight about the investment game’s risk profile. This means that out of 100 simulations, only approximately 19 end with a final balance greater than the initial $30,000 investment.</p>
+<p><strong>Conclusion:</strong></p>
+<p>The probability estimate of 19% for ending above the initial investment provides a clear, quantitative measure of the investment’s risk. This low probability, combined with the extreme volatility and wide range of outcomes observed in the simulations, suggests that <strong>this investment carries substantial risk that may be unacceptable for most investors</strong>. The practical meaning is clear: despite a positive expected value, an investor should expect to lose money in the majority of scenarios, making this a high-risk proposition that requires careful consideration of one’s risk tolerance and ability to withstand potential losses.</p>
 </section>
 <section id="modified-strategy-bet-exactly-50-each-round" class="level3">
 <h3 class="anchored" data-anchor-id="modified-strategy-bet-exactly-50-each-round">5) Modified Strategy (Bet Exactly 50% Each Round)</h3>
-<p>Instead of having the full balance at risk with each coin flip, assume only 25% of your balance is gambled each year. Compare this to the original game. Which is riskier? Which has better upside?</p>
+<p>Instead of having the full balance at risk with each coin flip, assume only 50% of your balance is gambled each year. Compare this to the original game. Which is riskier? Which has better upside?</p>
 <div id="cell-q5-modified-50pct-py" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div id="q5-modified-50pct-py" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/q5-modified-50pct-py-output-1.png" width="1525" height="566" class="figure-img"></p>
-<figcaption>Modified strategy distribution (bet 25% each round)</figcaption>
+<p><img src="index_files/figure-html/q5-modified-50pct-py-output-1.png" width="759" height="566" class="figure-img"></p>
+<figcaption>Comparison of original and modified strategy distributions on the same plot</figcaption>
 </figure>
 </div>
 </div>
@@ -219,25 +271,111 @@ COMPARISON: Original vs Modified Strategy
 Original Strategy (Full Balance at Risk):
   Mean final balance: $192,131.11
   Median final balance: $10,294.56
-  P(final &gt; $30,000): 0.190
+  Standard deviation: $1,561,309.44
+  P(final &gt; $30,000): 19.0%
   Min: $16.87, Max: $15,708,246.77
 
-Modified Strategy (25% of Balance at Risk):
-  Mean final balance: $41,853.16
-  Median final balance: $40,160.97
-  P(final &gt; $30,000): 0.690
-  Min: $8,422.37, Max: $239,378.05
+Modified Strategy (50% of Balance at Risk):
+  Mean final balance: $59,692.16
+  Median final balance: $37,500.00
+  Standard deviation: $136,670.26
+  P(final &gt; $30,000): 54.0%
+  Min: $1,649.27, Max: $1,332,267.63
 
 Differences:
-  Mean difference: $-150,277.95
-  Median difference: $29,866.42
-  P(&gt;$30,000) difference: 0.500</code></pre>
+  Mean difference: $-132,438.95
+  Median difference: $27,205.44
+  Standard dev ratio (mod/orig): 0.088
+  P(&gt;$30,000) difference: 35.0%</code></pre>
 </div>
 </div>
+<p><strong>Interpretation:</strong></p>
+<p><strong>Which strategy is riskier?</strong></p>
+<p>The <strong>original strategy (100% of balance at risk) is significantly riskier</strong> than the modified strategy. This is evident from several key metrics:</p>
+<ol type="1">
+<li><p><strong>Standard Deviation</strong>: The original strategy has a much higher standard deviation, indicating greater volatility and uncertainty in outcomes. The standard deviation ratio shows that the modified strategy has substantially less variability.</p></li>
+<li><p><strong>Range of Outcomes</strong>: The original strategy exhibits a wider spread between minimum and maximum final balances, demonstrating extreme outcomes in both directions. This creates a higher risk of substantial losses.</p></li>
+<li><p><strong>Probability of Loss</strong>: While both strategies have some probability of ending below the initial investment, the original strategy’s higher volatility means it has a greater chance of experiencing severe drawdowns.</p></li>
+<li><p><strong>Median vs Mean</strong>: The larger gap between median and mean in the original strategy (compared to the modified strategy) indicates a right-skewed distribution with more extreme positive outliers, but also more potential for significant losses.</p></li>
+</ol>
+<p><strong>Which has better upside?</strong></p>
+<p>The <strong>original strategy (100% of balance at risk) has better upside potential</strong>, as evidenced by:</p>
+<ol type="1">
+<li><p><strong>Higher Maximum Values</strong>: The original strategy achieves higher maximum final balances in the simulations, demonstrating its superior upside when favorable sequences of coin flips occur.</p></li>
+<li><p><strong>Higher Mean</strong>: The original strategy has a higher mean final balance, reflecting its greater expected value when all outcomes are considered.</p></li>
+<li><p><strong>Compounding Effect</strong>: By betting the full balance each round, the original strategy benefits more from compounding gains during winning streaks, leading to exponential growth in favorable scenarios.</p></li>
+</ol>
+<p><strong>Trade-off Summary:</strong></p>
+<p>The comparison reveals a classic risk-return trade-off:</p>
+<ul>
+<li><strong>Original Strategy</strong>: Higher risk (volatility) but better upside potential (higher maximums and mean)</li>
+<li><strong>Modified Strategy</strong>: Lower risk (reduced volatility) but more limited upside (lower maximums and mean)</li>
+</ul>
+<p>The modified strategy provides a more balanced approach, reducing the risk of catastrophic losses while still maintaining positive expected returns, though with less extreme upside potential. This makes it more suitable for risk-averse investors who prioritize capital preservation over maximum growth potential.</p>
 </section>
 <section id="briefly-explain-your-findings-from-the-previous-step-in-light-of-a-concept-known-as-the-kelly-criterion" class="level3">
 <h3 class="anchored" data-anchor-id="briefly-explain-your-findings-from-the-previous-step-in-light-of-a-concept-known-as-the-kelly-criterion">6) Briefly Explain Your Findings From The Previous Step in Light of A Concept Known as the “Kelly Criterion”</h3>
 <p>What is the Kelly Criterion and how does it relate to the modified strategy?</p>
+<div id="q6-kelly-criterion-py" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-stdout">
+<pre><code>======================================================================
+KELLY CRITERION ANALYSIS
+======================================================================
+
+Game Parameters:
+  Probability of win (p): 0.5
+  Probability of loss (q): 0.5
+  Win multiplier: 1.5x (gain 50% on bet)
+  Loss multiplier: 0.6x (lose 40% on bet)
+  Net gain on win (b): 0.5 (50% of fraction bet)
+  Net loss on loss (a): 0.4 (40% of fraction bet)
+
+Kelly Criterion Formula:
+  f* = (p*b - (1-p)*a) / (b*a)
+  f* = (0.5*0.5 - 0.5*0.4) / (0.5*0.4)
+  f* = (0.250 - 0.200) / 0.200
+  f* = 0.050 / 0.200
+  f* = 0.250 (25.0%)
+
+Interpretation:
+  The optimal fraction to bet each round is 25.0% of current wealth.
+  This maximizes the long-term logarithmic growth rate.
+
+Comparison with Strategies:
+  Original Strategy: 100% of balance at risk (over-betting)
+  Modified Strategy: 50% of balance at risk (still over-betting)
+  Kelly Optimal: 25.0% of balance at risk
+
+  ✓ The game has positive expected value, so Kelly fraction is positive.
+  ✓ Both strategies (100% and 50%) bet more than the Kelly optimal.
+  ✓ Over-betting relative to Kelly increases volatility and risk of ruin.
+
+======================================================================</code></pre>
+</div>
+</div>
+<p><strong>Explanation:</strong></p>
+<p>The <strong>Kelly Criterion</strong> is a formula that determines the optimal fraction of wealth to bet in order to maximize long-term logarithmic growth rate. Developed by John L. Kelly Jr.&nbsp;in 1956, it balances the trade-off between growth potential and risk of ruin.</p>
+<p>For this investment game, the Kelly Criterion suggests betting approximately <strong>25%</strong> of your current wealth each round (f* = 0.25). This is calculated based on: - The probability of winning (50%) - The gain when winning (50% on the fraction bet) - The loss when losing (40% on the fraction bet)</p>
+<p><strong>Key Findings:</strong></p>
+<ol type="1">
+<li><p><strong>Original Strategy (100% at risk)</strong>: This represents severe over-betting relative to the Kelly optimal. While it has the highest expected value and maximum upside potential, it also carries extreme volatility and a high risk of substantial losses. The geometric mean of returns is negative, meaning that despite a positive arithmetic mean, the strategy tends to lose money over the long run due to the asymmetry of multiplicative returns.</p></li>
+<li><p><strong>Modified Strategy (50% at risk)</strong>: This strategy reduces risk compared to the original, but still over-bets relative to Kelly. It provides a better balance between growth and risk, with:</p>
+<ul>
+<li>Lower volatility than the original strategy</li>
+<li>Higher probability of ending above the initial investment</li>
+<li>Better median outcomes</li>
+<li>Reduced risk of extreme losses</li>
+</ul></li>
+<li><p><strong>Kelly Optimal (25% at risk)</strong>: Betting the Kelly fraction would theoretically maximize long-term growth while minimizing the risk of ruin. It balances the trade-off between:</p>
+<ul>
+<li>Growth potential (higher expected logarithmic return)</li>
+<li>Risk management (lower probability of catastrophic losses)</li>
+<li>Volatility reduction (more stable outcomes)</li>
+</ul></li>
+</ol>
+<p><strong>Practical Implications:</strong></p>
+<p>The comparison between the original and modified strategies illustrates a fundamental principle: <strong>over-betting relative to Kelly increases both volatility and the risk of ruin, even when the expected value is positive</strong>. The modified strategy (50% betting) moves in the right direction toward the Kelly optimal but still carries more risk than necessary.</p>
+<p>This analysis highlights why expected value alone is insufficient for decision-making in multiplicative (compounding) scenarios. The Kelly Criterion provides a framework for optimal capital allocation that accounts for both the probability and magnitude of outcomes, helping investors avoid the trap of over-leveraging even in favorable games.</p>
 </section>
 </section>
 <section id="professional-presentation-from-grading-tldr" class="level2">
