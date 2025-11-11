@@ -229,7 +229,7 @@ prob_above_initial = np.mean(final_balances > initial_balance)
 prob_below_initial = np.mean(final_balances < initial_balance)
 
 # Create histogram with log scale bins
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(8, 6))
 
 # Create log-spaced bins
 min_balance = np.min(final_balances)
